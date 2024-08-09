@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+//Auxiliary Methods for connecting and disconnecting to DB
+
 public class DB {
 
     private static Connection conn = null;
@@ -46,6 +48,7 @@ public class DB {
         }
     }
 
+    //Auxiliary Methods for closing Statement and ResultSet
     public static void closeStatement(Statement st) {
         if (st != null) {
             try {
