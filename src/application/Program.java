@@ -18,8 +18,12 @@ public class Program {
         //Test Seller DAO through dependency injection.
         SellerDao sellerDao = DaoFactory.createSellerDao();
         
+        //Test findById
+        Seller sellerTestId = sellerDao.findById(3);
+
         System.out.println(d);
         System.out.println(seller);
+        System.out.println(sellerTestId);
     }
     
 }
