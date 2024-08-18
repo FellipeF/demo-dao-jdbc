@@ -24,13 +24,19 @@ public class Program {
         //Test findById
         Seller sellerTestId = sellerDao.findById(3);
         System.out.println(sellerTestId);
-        
+
         //Test findByDepartment
         System.out.println("---------------------------");
         Department dTestDepartment = new Department(2, null);
         List<Seller> list = sellerDao.findByDepartment(dTestDepartment);
-        for (Seller s : list)
-        {
+        for (Seller s : list) {
+            System.out.println(s);
+        }
+
+        //Test findAll
+        System.out.println("---------------------------");
+        list = sellerDao.findAll();
+        for (Seller s : list) {
             System.out.println(s);
         }
     }
