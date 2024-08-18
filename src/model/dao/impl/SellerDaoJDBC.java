@@ -11,16 +11,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import model.entities.Department;
 
-public class SellerDaoJDBC implements SellerDao{
-    
+public class SellerDaoJDBC implements SellerDao {
+
     //TODO: Replace the default created overriden methods.
-    
     private Connection conn;
-    
+
     //Forces dependency injection
-    
-    public SellerDaoJDBC (Connection conn)
-    {
+    public SellerDaoJDBC(Connection conn) {
         this.conn = conn;
     }
 
@@ -48,43 +45,48 @@ public class SellerDaoJDBC implements SellerDao{
                     + "FROM SELLER INNER JOIN DEPARTMENT "
                     + "ON SELLER.DEPARTMENTID = DEPARTMENT.ID "
                     + "WHERE SELLER.ID = ?");
-            
+
             st.setInt(1, id);
-            rs = st.executeQuery();     
-            
+            rs = st.executeQuery();
+
             //Object Association and instantiated in memory
             //find anything when querying?
-            if (rs.next())
-            {
-                Department d = new Department();
-                d.setId(rs.getInt("DepartmentId"));
-                d.setName(rs.getString("DEPNAME"));
-                
-                Seller s = new Seller();
-                s.setId(rs.getInt("Id"));
-                s.setName(rs.getString("Name"));
-                s.setEmail(rs.getString("Email"));
-                s.setBaseSalary(rs.getDouble("BaseSalary"));
-                s.setBirthDate(rs.getDate("BirthDate"));
-                s.setDepartment(d);
-                
+            if (rs.next()) {
+                Department d = instantiateDepartment(rs);
+                Seller s = instantiateSeller(rs, d);
                 return s;
-            }  
+            }
             return null;
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new DbException(e.getMessage());
-        }
-        finally
-        {
+        } finally {
             DB.closeStatement(st);
             DB.closeResultSet(rs);
         }
     }
-        
+
     @Override
     public List<Seller> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
+    //No need for try catch exception, since it's already done in the other overriden methods
+    private Department instantiateDepartment(ResultSet rs) throws SQLException {
+        Department d = new Department();
+        d.setId(rs.getInt("DepartmentId"));
+        d.setName(rs.getString("DEPNAME"));
+        return d;
+    }
+
+    private Seller instantiateSeller(ResultSet rs, Department d) throws SQLException {
+        Seller s = new Seller();
+        s.setId(rs.getInt("Id"));
+        s.setName(rs.getString("Name"));
+        s.setEmail(rs.getString("Email"));
+        s.setBaseSalary(rs.getDouble("BaseSalary"));
+        s.setBirthDate(rs.getDate("BirthDate"));
+        s.setDepartment(d);
+        return s;
+    }
+
 }
