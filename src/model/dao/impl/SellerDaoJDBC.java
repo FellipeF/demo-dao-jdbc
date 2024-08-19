@@ -68,7 +68,7 @@ public class SellerDaoJDBC implements SellerDao {
             st.setInt(6, s.getId());
 
             st.executeUpdate();
-            
+
         } catch (SQLException e) {
             throw new DbException(e.getMessage());
         } finally {
@@ -78,7 +78,25 @@ public class SellerDaoJDBC implements SellerDao {
 
     @Override
     public void deleteById(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        PreparedStatement st = null;
+
+        try {
+            st = conn.prepareStatement("DELETE FROM SELLER WHERE ID = ?");
+
+            st.setInt(1, id);
+
+            int affectedRows = st.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Delete completed!");
+            } else {
+                throw new DbException("Delete error! No user found.");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
