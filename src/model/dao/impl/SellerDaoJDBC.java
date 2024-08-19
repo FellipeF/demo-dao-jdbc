@@ -17,7 +17,6 @@ import model.entities.Department;
 
 public class SellerDaoJDBC implements SellerDao {
 
-    //TODO: Replace the default created overriden methods.
     private Connection conn;
 
     //Forces dependency injection
@@ -28,44 +27,53 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public void insert(Seller s) {
         PreparedStatement st = null;
-        try 
-        {
+        try {
             st = conn.prepareStatement("INSERT INTO SELLER (NAME, EMAIL, BIRTHDATE, BASESALARY, DEPARTMENTID) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            
+
             st.setString(1, s.getName());
             st.setString(2, s.getEmail());
             st.setDate(3, new java.sql.Date(s.getBirthDate().getTime()));
             st.setDouble(4, s.getBaseSalary());
             st.setInt(5, s.getDepartment().getId());
-            
+
             int affectedRows = st.executeUpdate();
-            if (affectedRows > 0)
-            {
+            if (affectedRows > 0) {
                 ResultSet rs = st.getGeneratedKeys();
-                if (rs.next())
-                {
+                if (rs.next()) {
                     int id = rs.getInt(1);
                     s.setId(id);
                 }
                 DB.closeResultSet(rs);
-            }
-            else
-            {
+            } else {
                 throw new DbException("Unexpected error! No rows affected.");
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new DbException(e.getMessage());
-        }
-        finally
-        {
+        } finally {
             DB.closeStatement(st);
         }
     }
 
     @Override
     public void update(Seller s) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement("UPDATE SELLER SET NAME = ?, EMAIL = ?, BIRTHDATE = ?, BASESALARY = ?, DEPARTMENTID = ? WHERE ID = ?", Statement.RETURN_GENERATED_KEYS);
+
+            st.setString(1, s.getName());
+            st.setString(2, s.getEmail());
+            st.setDate(3, new java.sql.Date(s.getBirthDate().getTime()));
+            st.setDouble(4, s.getBaseSalary());
+            st.setInt(5, s.getDepartment().getId());
+            st.setInt(6, s.getId());
+
+            st.executeUpdate();
+            
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
