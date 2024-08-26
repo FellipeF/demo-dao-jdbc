@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import model.dao.DaoFactory;
+import model.dao.DepartmentDao;
 import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
@@ -16,13 +17,9 @@ public class Program {
         //Test Seller DAO through dependency injection.
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
-        //Test Department Class
-        Department d = new Department(1, "Books");
-        System.out.println(d);
-
         //Test Seller Class
         System.out.println("---------------------------");
-        Seller seller = new Seller(21, "Bob", "bob@gmail.com", new Date(), 3000.0, d);
+        Seller seller = new Seller(21, "Bob", "bob@gmail.com", new Date(), 3000.0, new Department(1, "Books"));
         System.out.println(seller);
 
         //Test findById
@@ -63,7 +60,43 @@ public class Program {
         System.out.print("Enter ID to be deleted: ");
         int id = input.nextInt();
         sellerDao.deleteById(id);
+
+        //BEGIN DEPARTMENT TESTING
+        DepartmentDao departmentDao = DaoFactory.createDepartmentDao();
+        Department d = new Department(1, "Books");
+        System.out.println(d);
+
+        //INSERT DEPARTMENT
+        System.out.println("---------------------------");
+        Department dep = new Department(null, "Games");
+        departmentDao.insert(dep);
+        System.out.println("Inserted! New id = " + dep.getId());
+
+        //FIND DEPARTMENT BY ID
+        System.out.println("---------------------------");
+        Department depFind = departmentDao.findById(3);
+        System.out.println(depFind);
+
+        //UPDATE DEPARTMENT
+        System.out.println("---------------------------");
+        dep = departmentDao.findById(6);
+        dep.setName("Food");
+        departmentDao.update(dep);
+        System.out.println("Update complete!");
+
+        //DELETE DEPARTMENT
+        System.out.println("---------------------------");
+        System.out.print("Enter ID to be deleted: ");
+        id = input.nextInt();
+        departmentDao.deleteById(id);
         
+        //FIND ALL DEPARTMENTS
+        System.out.println("---------------------------");
+        List <Department> departments = departmentDao.findAll();
+        for (Department department : departments) {
+            System.out.println(department);
+        }
+
         input.close();
 
     }
